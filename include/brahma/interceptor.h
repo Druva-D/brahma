@@ -23,17 +23,31 @@
     gotcha_binding_t binding = {#fname, (void*)fname##_wrapper,       \
                                 &fname##_brahma_handle};              \
     bindings.push_back(binding);                                      \
-    if(::fname){                                                       \
       gotcha_binding_t unbinding = {#fname, (void*)::fname,           \
                                     &fname##_brahma_handle};          \
       unbindings.push_back(unbinding);                                \
-    }                                                                  \
   }
+
+// For non-void return type
 #define GOTCHA_MACRO_TYPEDEF(name, ret, args, args_val, class_name) \
-  typedef ret(*name##_fptr) args;                                   \
-  inline ret name##_wrapper args {                                  \
-      return class_name::get_instance()->name args_val;             \
+  typedef ret(*name##_fptr) args;                                       \
+  inline ret name##_wrapper args {                                      \
+      printf("BRAHMA: Wrapping function %s\n", #name);                  \
+      ret result = class_name::get_instance()->name args_val;           \
+      printf("BRAHMA: Unwrapping function %s\n", #name);                \
+      return result;                                                    \
   }
+
+// For void return type
+#define GOTCHA_MACRO_TYPEDEF_VOID(name, ret, args, args_val, class_name)     \
+  typedef void(*name##_fptr) args;                                     \
+  inline void name##_wrapper args {                                    \
+      printf("BRAHMA: Wrapping function %s\n", #name);                 \
+      class_name::get_instance()->name args_val;                       \
+      printf("BRAHMA: Unwrapping function %s\n", #name);                \
+      return;                                                           \
+  }
+
 #define GOTCHA_MACRO_TYPEDEF_OPEN(name, ret, args, args_val, start, \
                                   class_name)                       \
   typedef ret(*name##_fptr) args;                                   \
@@ -67,7 +81,7 @@
                   #name);                                                     \
   name##_fptr name##_wrappee =                                                \
       (name##_fptr)gotcha_get_wrappee(name##_brahma_handle);                  \
-  ret result = name##_wrappee args;
+  ret result = name##_wrappee args
 
 #define BRAHMA_UNWRAPPED_FUNC_VOID(name, args)                                \
   BRAHMA_LOG_INFO("[BRAHMA]\tFunction %s() not wrapped. Calling Original.\n", \

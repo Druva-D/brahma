@@ -348,7 +348,7 @@ GOTCHA_MACRO_TYPEDEF(opendir, DIR *, (const char *name), (name), brahma::POSIX)
 GOTCHA_MACRO_TYPEDEF(readdir, struct dirent *, (DIR * dir), (dir),
                      brahma::POSIX)
 GOTCHA_MACRO_TYPEDEF(closedir, int, (DIR * dir), (dir), brahma::POSIX)
-GOTCHA_MACRO_TYPEDEF(rewinddir, void, (DIR * dir), (dir), brahma::POSIX)
+GOTCHA_MACRO_TYPEDEF_VOID(rewinddir, void, (DIR * dir), (dir), brahma::POSIX)
 typedef int (*fcntl_fptr)(int fd, int cmd, ...);
 inline int fcntl_wrapper(int fd, int cmd, ...) {
   if (cmd == F_DUPFD || cmd == F_DUPFD_CLOEXEC || cmd == F_SETFD ||
@@ -409,7 +409,7 @@ GOTCHA_MACRO_TYPEDEF(execvpe, int,
                       char *const envp[]),
                      (pathname, argv, envp), brahma::POSIX)
 GOTCHA_MACRO_TYPEDEF(fork, int, (), (), brahma::POSIX)
-GOTCHA_MACRO_TYPEDEF(exit, void,
+GOTCHA_MACRO_TYPEDEF_VOID(exit, void,
                      (int status),
                      (status), brahma::POSIX)
 GOTCHA_MACRO_TYPEDEF(mmap, void *,
